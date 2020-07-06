@@ -12,6 +12,9 @@ from pyspark.sql.types import StringType
 from pyspark.ml.feature import StringIndexer
 from pyspark.sql.types import IntegerType
 
+from sklearn import metrics
+import numpy as np
+import seaborn as sns
 
 
 # CREATE SPARK SESSION
@@ -123,3 +126,22 @@ print("Number of normal connections : " + str(normal) + " Number of normal predi
 
 print("accuracy on fraud connection: " + str(fraud_prediction) + " / " + str(fraud) + " = " + str(float(fraud_prediction) / fraud))
 print("accuracy on normal connection: " + str(normal_prediction) + " / " + str(normal) + " = " + str(float(normal_prediction) / normal))
+
+cmat = metrics.confusion_matrix(fraud, fraud_prediction)
+group_names = ['True Neg','False Pos','False Neg','True Pos']
+group_counts = ["{0:0.0f}".format(value) for value in
+                cmat.flatten()]
+group_percentages = ["{0:.2%}".format(value) for value in
+                     cmat.flatten()/np.sum(cmat)]
+labels = [f"{v1}\n{v2}\n{v3}" for v1, v2, v3 in
+          zip(group_names,group_counts,group_percentages)]
+labels = np.asarray(labels).reshape(2,2)
+sns.heatmap(cmat, annot=labels, fmt='', cmap='Blues')
+
+print('TP - True Negative {}'.format(cmat[0,0]))
+print('FP - False Positive {}'.format(cmat[0,1]))
+print('FN - False Negative {}'.format(cmat[1,0]))
+print('TP - True Positive {}'.format(cmat[1,1]))
+print('Accuracy Rate: {}'.format(np.divide(np.sum([cmat[0,0],cmat[1,1]]),np.sum(cmat))))
+print('Misclassification Rate: {}'.format(np.divide(np.sum([cmat[0,1],cmat[1,0]]),np.sum(cmat))))
+
