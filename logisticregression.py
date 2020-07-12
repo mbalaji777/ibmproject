@@ -127,7 +127,7 @@ print("Number of normal connections : " + str(normal) + " Number of normal predi
 print("accuracy on fraud connection: " + str(fraud_prediction) + " / " + str(fraud) + " = " + str(float(fraud_prediction) / fraud))
 print("accuracy on normal connection: " + str(normal_prediction) + " / " + str(normal) + " = " + str(float(normal_prediction) / normal))
 
-cmat = metrics.confusion_matrix(fraud, fraud_prediction)
+cmat = metrics.confusion_matrix( fraud, fraud_prediction)
 group_names = ['True Neg','False Pos','False Neg','True Pos']
 group_counts = ["{0:0.0f}".format(value) for value in
                 cmat.flatten()]
